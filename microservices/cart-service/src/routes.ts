@@ -33,7 +33,32 @@ const validateUserId = (req: Request, res: Response, next: express.NextFunction)
   }
 };
 
-// Routes
+/**
+ * @swagger
+ * /api/cart/{userId}:
+ *   get:
+ *     summary: Get user's cart
+ *     description: Retrieve the shopping cart for a specific user
+ *     tags: [Cart]
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: User ID
+ *     responses:
+ *       200:
+ *         description: Cart retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Cart'
+ *       400:
+ *         description: Invalid user ID
+ *       500:
+ *         description: Internal server error
+ */
 router.get('/cart/:userId', validateUserId, async (req: Request, res: Response) => {
   try {
     const { userId } = req.params;
@@ -45,6 +70,40 @@ router.get('/cart/:userId', validateUserId, async (req: Request, res: Response) 
   }
 });
 
+/**
+ * @swagger
+ * /api/cart/{userId}/items:
+ *   post:
+ *     summary: Add item to cart
+ *     description: Add a product to the user's shopping cart
+ *     tags: [Cart]
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: User ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/AddToCartRequest'
+ *     responses:
+ *       200:
+ *         description: Item added to cart
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Cart'
+ *       400:
+ *         description: Invalid request data
+ *       404:
+ *         description: Product not found
+ *       500:
+ *         description: Internal server error
+ */
 router.post('/cart/:userId/items', validateUserId, async (req: Request, res: Response) => {
   try {
     const { userId } = req.params;
@@ -116,7 +175,17 @@ router.get('/cart/:userId/summary', validateUserId, async (req: Request, res: Re
   }
 });
 
-// Health check
+/**
+ * @swagger
+ * /api/health:
+ *   get:
+ *     summary: Health check
+ *     description: Check if the service is healthy
+ *     tags: [Health]
+ *     responses:
+ *       200:
+ *         description: Service is healthy
+ */
 router.get('/health', (req: Request, res: Response) => {
   res.json({ status: 'healthy', service: 'cart-service', timestamp: new Date().toISOString() });
 });

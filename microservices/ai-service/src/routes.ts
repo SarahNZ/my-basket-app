@@ -16,7 +16,31 @@ const PersonalizedRecommendationsSchema = z.object({
   maxSuggestions: z.number().positive().max(20).optional().default(6),
 });
 
-// Routes
+/**
+ * @swagger
+ * /api/recommendations/grocery-suggestions:
+ *   post:
+ *     summary: Get grocery suggestions
+ *     description: Get AI-powered grocery suggestions based on cart items
+ *     tags: [Recommendations]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/GrocerySuggestionsRequest'
+ *     responses:
+ *       200:
+ *         description: Suggestions generated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/GrocerySuggestionsResponse'
+ *       400:
+ *         description: Invalid request data
+ *       500:
+ *         description: Internal server error
+ */
 router.post('/recommendations/grocery-suggestions', async (req: Request, res: Response) => {
   try {
     const input = GrocerySuggestionsSchema.parse(req.body);
@@ -36,6 +60,31 @@ router.post('/recommendations/grocery-suggestions', async (req: Request, res: Re
   }
 });
 
+/**
+ * @swagger
+ * /api/recommendations/personalized:
+ *   post:
+ *     summary: Get personalized recommendations
+ *     description: Get personalized product recommendations based on user history and cart
+ *     tags: [Recommendations]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/PersonalizedRecommendationsRequest'
+ *     responses:
+ *       200:
+ *         description: Recommendations generated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/PersonalizedRecommendationsResponse'
+ *       400:
+ *         description: Invalid request data
+ *       500:
+ *         description: Internal server error
+ */
 router.post('/recommendations/personalized', async (req: Request, res: Response) => {
   try {
     const input = PersonalizedRecommendationsSchema.parse(req.body);
@@ -75,7 +124,17 @@ router.post('/grocery-suggestions', async (req: Request, res: Response) => {
   }
 });
 
-// Health check
+/**
+ * @swagger
+ * /api/health:
+ *   get:
+ *     summary: Health check
+ *     description: Check if the AI service is healthy
+ *     tags: [Health]
+ *     responses:
+ *       200:
+ *         description: Service is healthy
+ */
 router.get('/health', (req: Request, res: Response) => {
   res.json({ status: 'healthy', service: 'ai-service', timestamp: new Date().toISOString() });
 });

@@ -7,6 +7,7 @@ import { createProxyMiddleware } from 'http-proxy-middleware';
 import dotenv from 'dotenv';
 import { serviceConfig } from './config';
 import { HealthCheckService } from './health';
+import { setupSwagger } from './swagger';
 
 dotenv.config();
 
@@ -23,10 +24,13 @@ const limiter = rateLimit({
 });
 
 // Middleware
-app.use(helmet());
+app.use(helmet({ contentSecurityPolicy: false }));
 app.use(cors());
 app.use(compression());
 app.use(limiter);
+
+// Setup Swagger documentation
+setupSwagger(app);
 
 // Only parse JSON for non-proxied routes
 app.use((req, res, next) => {
@@ -38,7 +42,23 @@ app.use((req, res, next) => {
   return express.json()(req, res, next);
 });
 
-// Health check endpoint
+/**
+ * @swagger
+ * /health:
+ *   get:
+ *     summary: Health check for all services
+ *     description: Check the health status of the API Gateway and all microservices
+ *     tags: [Gateway]
+ *     responses:
+ *       200:
+ *         description: All services are healthy
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/HealthStatus'
+ *       503:
+ *         description: One or more services are unhealthy
+ */
 app.get('/health', async (req: express.Request, res: express.Response) => {
   try {
     const healthStatus = await healthCheckService.checkAllServices();
@@ -54,7 +74,21 @@ app.get('/health', async (req: express.Request, res: express.Response) => {
   }
 });
 
-// Gateway info endpoint
+/**
+ * @swagger
+ * /info:
+ *   get:
+ *     summary: Gateway information
+ *     description: Get information about the API Gateway and available services
+ *     tags: [Gateway]
+ *     responses:
+ *       200:
+ *         description: Gateway information
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/GatewayInfo'
+ */
 app.get('/info', (req: express.Request, res: express.Response) => {
   res.json({
     gateway: 'api-gateway',
@@ -118,4 +152,5 @@ app.listen(PORT, () => {
     console.log(`- ${service.name}: ${service.path} -> ${service.url}`);
   });
   console.log(`Health check: http://localhost:${PORT}/health`);
+  console.log(`API Docs: http://localhost:${PORT}/api-docs`);
 });

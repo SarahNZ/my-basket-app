@@ -56,7 +56,38 @@ const PaginationSchema = z.object({
   limit: z.coerce.number().positive().max(100).optional(),
 });
 
-// Routes
+/**
+ * @swagger
+ * /api/orders/{userId}:
+ *   post:
+ *     summary: Create a new order
+ *     description: Create a new order from cart items
+ *     tags: [Orders]
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: User ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/CreateOrderRequest'
+ *     responses:
+ *       201:
+ *         description: Order created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Order'
+ *       400:
+ *         description: Invalid order data
+ *       500:
+ *         description: Internal server error
+ */
 router.post('/orders/:userId', async (req: Request, res: Response) => {
   try {
     const { userId } = req.params;
@@ -76,6 +107,48 @@ router.post('/orders/:userId', async (req: Request, res: Response) => {
   }
 });
 
+/**
+ * @swagger
+ * /api/orders/{userId}:
+ *   get:
+ *     summary: Get user orders
+ *     description: Retrieve all orders for a specific user
+ *     tags: [Orders]
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: User ID
+ *       - in: query
+ *         name: status
+ *         schema:
+ *           type: string
+ *           enum: [pending, confirmed, processing, shipped, delivered, cancelled]
+ *         description: Filter by order status
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           default: 1
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           default: 20
+ *     responses:
+ *       200:
+ *         description: Orders retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/OrderList'
+ *       400:
+ *         description: Invalid parameters
+ *       500:
+ *         description: Internal server error
+ */
 router.get('/orders/:userId', async (req: Request, res: Response) => {
   try {
     const { userId } = req.params;

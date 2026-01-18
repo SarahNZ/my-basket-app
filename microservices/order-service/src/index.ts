@@ -4,6 +4,7 @@ import helmet from 'helmet';
 import compression from 'compression';
 import dotenv from 'dotenv';
 import orderRoutes from './routes';
+import { setupSwagger } from './swagger';
 
 dotenv.config();
 
@@ -11,11 +12,14 @@ const app = express();
 const PORT = process.env.PORT || 3003;
 
 // Middleware
-app.use(helmet());
+app.use(helmet({ contentSecurityPolicy: false }));
 app.use(cors());
 app.use(compression());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Setup Swagger documentation
+setupSwagger(app);
 
 // Routes
 app.use('/api', orderRoutes);
@@ -34,4 +38,5 @@ app.use('*', (req: express.Request, res: express.Response) => {
 app.listen(PORT, () => {
   console.log(`Order service running on port ${PORT}`);
   console.log(`Health check: http://localhost:${PORT}/api/health`);
+  console.log(`API Docs: http://localhost:${PORT}/api-docs`);
 });

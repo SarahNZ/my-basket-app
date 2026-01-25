@@ -6,12 +6,12 @@ The API Gateway defines its rate-limiting in the index.ts file (microservices/ap
 
 Whereas the routing rules are clearly defined in the config.ts file (microservices/api-gateway/src/config.ts) in a serviceConfig array: 
 
-`export const serviceConfig: ServiceConfig[] = [
+export const serviceConfig: ServiceConfig[] = [
   { name: 'product-service', url: 'http://localhost:3001', path: '/api/products', healthCheck: '/api/health' },
   { name: 'cart-service', url: 'http://localhost:3002', path: '/api/cart', healthCheck: '/api/health' },
   { name: 'order-service', url: 'http://localhost:3003', path: '/api/orders', healthCheck: '/api/health' },
   { name: 'ai-service', url: 'http://localhost:3004', path: '/api/recommendations', healthCheck: '/api/health' },
-];`
+];
 
 - The Goal: Locate the configuration file (e.g., microservices/api-gateway/src/config.ts) and ask: "How many requests per minute are allowed before the Gateway returns a 429 error?"
 

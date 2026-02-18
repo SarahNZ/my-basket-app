@@ -82,6 +82,14 @@ const options: swaggerJsdoc.Options = {
               description: 'Stock availability',
               example: true,
             },
+            discount: {
+              type: 'number',
+              format: 'float',
+              description: 'Percentage discount (1-100) with up to 2 decimal places',
+              minimum: 1,
+              maximum: 100,
+              example: 15.50,
+            },
           },
         },
         ProductList: {

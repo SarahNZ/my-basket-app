@@ -7,6 +7,7 @@ export interface Product {
   dataAiHint: string;
   category?: string;
   inStock?: boolean;
+  discount?: number; // Percentage discount (1-100) with up to 2 decimal places
   createdAt?: Date;
   updatedAt?: Date;
 }

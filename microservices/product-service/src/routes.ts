@@ -27,6 +27,15 @@ const CreateProductSchema = z.object({
   dataAiHint: z.string().min(1),
   category: z.string().optional(),
   inStock: z.boolean().optional(),
+  discount: z.number()
+    .min(1, 'Discount must be at least 1')
+    .max(100, 'Discount cannot exceed 100')
+    .refine((val) => {
+      const str = val.toString();
+      const decimalPart = str.split('.')[1];
+      return !decimalPart || decimalPart.length <= 2;
+    }, 'Discount can have at most 2 decimal places')
+    .optional(),
 });
 
 const UpdateProductSchema = CreateProductSchema.partial();

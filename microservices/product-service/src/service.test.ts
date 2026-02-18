@@ -5,11 +5,16 @@ import { sampleProducts } from './data';
 describe('ProductService', () => {
   let productService: ProductService;
   let mockDate: Date;
+  let originalDateNow: () => number;
 
   beforeEach(() => {
     productService = new ProductService();
     mockDate = new Date('2024-01-01T00:00:00.000Z');
-    jest.spyOn(global, 'Date').mockImplementation(() => mockDate as any);
+    
+    // Preserve Date.now() while mocking Date constructor
+    originalDateNow = Date.now;
+    jest.spyOn(global, 'Date').mockImplementation((() => mockDate) as any);
+    Date.now = originalDateNow;
   });
 
   afterEach(() => {
@@ -219,6 +224,8 @@ describe('ProductService', () => {
       };
 
       const product1 = await productService.createProduct(newProductData);
+      // Add a small delay to ensure Date.now() returns different values
+      await new Promise(resolve => setTimeout(resolve, 10));
       const product2 = await productService.createProduct(newProductData);
 
       expect(product1.id).not.toBe(product2.id);

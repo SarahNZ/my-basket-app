@@ -2,7 +2,7 @@ import { Product, ProductFilters, PaginationParams, ProductResponse } from './ty
 import { sampleProducts } from './data';
 
 export class ProductService {
-  private products: Product[] = sampleProducts;
+  private products: Product[] = [...sampleProducts];
 
   async getAllProducts(
     filters?: ProductFilters,
@@ -70,6 +70,18 @@ export class ProductService {
   }
 
   async createProduct(productData: Omit<Product, 'id' | 'createdAt' | 'updatedAt'>): Promise<Product> {
+    // Validate discount if provided
+    if (productData.discount !== undefined) {
+      if (productData.discount < 1 || productData.discount > 100) {
+        throw new Error('Discount must be between 1 and 100');
+      }
+      // Validate 2 decimal places
+      const decimalPlaces = (productData.discount.toString().split('.')[1] || '').length;
+      if (decimalPlaces > 2) {
+        throw new Error('Discount can have at most 2 decimal places');
+      }
+    }
+    
     const newProduct: Product = {
       ...productData,
       id: Date.now().toString(), // In real app, use proper UUID
@@ -87,6 +99,18 @@ export class ProductService {
     
     if (productIndex === -1) {
       return null;
+    }
+    
+    // Validate discount if being updated
+    if (updates.discount !== undefined) {
+      if (updates.discount < 1 || updates.discount > 100) {
+        throw new Error('Discount must be between 1 and 100');
+      }
+      // Validate 2 decimal places
+      const decimalPlaces = (updates.discount.toString().split('.')[1] || '').length;
+      if (decimalPlaces > 2) {
+        throw new Error('Discount can have at most 2 decimal places');
+      }
     }
     
     this.products[productIndex] = {

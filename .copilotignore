@@ -1,0 +1,14 @@
+**/.env*
+**/*.env
+**/secrets/**
+**/credentials/**
+**/*.pem
+**/*.key
+node_modules/
+dist/
+.git/
+test-results/
+playwright-report/
+
+# Note: ** means zero or more directories (recursive matching), while *
+# means "everything within a single path segment."

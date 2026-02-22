@@ -46,12 +46,10 @@ export interface PaginationParams {
 
 export interface ProductListResponse {
   products: Product[];
-  pagination: {
-    total: number;
-    page: number;
-    limit: number;
-    totalPages: number;
-  };
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
 }
 
 export interface CategoryResponse {

@@ -19,11 +19,10 @@ export class ResponseValidator {
   static validateProductList(response: ProductListResponse) {
     expect(response).toBeDefined();
     expect(Array.isArray(response.products)).toBe(true);
-    expect(response.pagination).toBeDefined();
-    expect(typeof response.pagination.total).toBe('number');
-    expect(typeof response.pagination.page).toBe('number');
-    expect(typeof response.pagination.limit).toBe('number');
-    expect(typeof response.pagination.totalPages).toBe('number');
+    expect(typeof response.total).toBe('number');
+    expect(typeof response.page).toBe('number');
+    expect(typeof response.limit).toBe('number');
+    expect(typeof response.totalPages).toBe('number');
     
     response.products.forEach(product => this.validateProduct(product));
   }
